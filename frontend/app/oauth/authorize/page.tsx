@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 
-export default function OAuthAuthorizePage() {
+function OAuthAuthorizeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,8 @@ export default function OAuthAuthorizePage() {
     try {
       const token = localStorage.getItem('samooh_token');
 
-      const response = await fetch('http://localhost:3200/api/oauth/authorize/approve', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3200/api';
+      const response = await fetch(`${apiUrl}/oauth/authorize/approve`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -139,5 +140,17 @@ export default function OAuthAuthorizePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function OAuthAuthorizePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    }>
+      <OAuthAuthorizeContent />
+    </Suspense>
   );
 }

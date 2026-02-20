@@ -19,7 +19,7 @@ async function bootstrap() {
   });
 
   const port = process.env.PORT || 3200;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
   console.log(`Samooh backend running on http://localhost:${port}`);
 }
 
